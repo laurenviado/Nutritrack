@@ -36,6 +36,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "f3b478f8-978d-4497-bfdb-bdc4d57d7f2e"
+      }
+    },
+    "owner": "laurenviado"
   }
 }
