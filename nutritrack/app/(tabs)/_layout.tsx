@@ -1,7 +1,6 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
@@ -21,16 +20,11 @@ export default function TabLayout() {
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
+            // Use a transparent background on iOS to show the blur effect
             position: 'absolute',
-            paddingBottom: 0,
-            height: 55,
           },
-          default: {
-            paddingBottom: 0,
-            height: 55,
-          },
+          default: {},
         }),
-        
       }}>
       <Tabs.Screen
         name="index"
@@ -40,35 +34,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="pantry"
+        name="explore"
         options={{
-          title: 'Pantry',
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="basket-outline" size={28} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="recipes"
-        options={{
-          title: 'Recipes',
-          tabBarIcon: ({ color }) => <Ionicons name="book-outline" size={24} color={color} />,
-        }}
-      />
-
-      <Tabs.Screen
-        name="meal-plan"
-        options={{
-          title: 'Meal Plan',
-          tabBarIcon: ({ color }) => <Ionicons name="restaurant-outline" size={24} color={color} />,
-        }}
-      />
-
-      <Tabs.Screen
-        name="meal-log"
-        options={{
-          title: 'Meal Log',
-          tabBarIcon: ({ color }) => <Ionicons name="calendar-outline" size={24} color={color} />,
+          title: 'Explore',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
         }}
       />
     </Tabs>
