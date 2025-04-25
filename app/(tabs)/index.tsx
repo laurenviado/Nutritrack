@@ -1,20 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'expo-router';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Colors } from '@/constants/Colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ProgressCircle from '@/components/ProgressCircle';
+import CalendarStrip from 'react-native-calendar-strip';
 
 export default function HomeScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme() ?? 'light';
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const today = new Date().toLocaleDateString(undefined, {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-  });
+  const isToday = (date: Date) => {
+    const today = new Date();
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
+  };
+
+  const formattedDate = isToday(selectedDate)
+    ? 'Today'
+    : selectedDate.toLocaleDateString(undefined, {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+      });
+
+  const handleDateChange = (date: moment.Moment) => {
+    setSelectedDate(date.toDate());
+  };
 
   // Calculate macro totals using fake data (at bottom of code)
   const macroTotals = fakeMeals.reduce(
@@ -35,11 +52,6 @@ export default function HomeScreen() {
     carbsTarget: 150,
     fatTarget: 60,
   };
-
-  function calculateMacroProgress(intake: number, goal: number): number {
-    return intake/goal;
-  }
-  
   
   // fake data for meal plan block
   const progressData: {
@@ -59,20 +71,48 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: Colors[colorScheme].background }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Text style={[styles.title, { color: Colors[colorScheme].text }]}>{today}</Text>
+        <Text style={[styles.title, { color: Colors[colorScheme].text }]}>{formattedDate}</Text>
+
+        {/* Calendar Block */}
+        <CalendarStrip
+                selectedDate={new Date()}
+                scrollable={false}
+                numDaysInWeek={7} // 👈 forces exactly 7 days
+                style={[styles.calendar]}
+                calendarColor={Colors[colorScheme].primary}
+                dateNameStyle={{
+                    fontSize: 13, // Day label, e.g. "MON"
+                    color: Colors[colorScheme].text,
+                }}
+                dateNumberStyle={{
+                    fontSize: 20, // Date number, e.g. "21"
+                    color: Colors[colorScheme].text,
+                }}
+                highlightDateNameStyle={{
+                    fontSize: 13,
+                    color: Colors[colorScheme].background,
+                }}
+                highlightDateNumberStyle={{
+                    fontSize: 20,
+                    color: Colors[colorScheme].background,
+                }}
+                
+                highlightDateContainerStyle={{
+                    backgroundColor: Colors[colorScheme].secondary,
+                    borderRadius: 20,
+                    height: 50,
+                    width: 50,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+                    onDateSelected={handleDateChange}
+                />
 
         {/* Meals Logged Block */}
         <View style={[styles.card, { backgroundColor: Colors[colorScheme].peach }]}>
-            <TouchableOpacity onPress={() => router.push('/meal-log')}>
-                <Text style={[styles.cardTitle, { color: Colors[colorScheme].text }]}>
-                    Today's Meal Log
-                </Text>
-            </TouchableOpacity>          {/*   <--- no meals logged --->
-          <Text style={[styles.emptyText, { color: Colors[colorScheme].text }]}>No meals logged yet.</Text>
-          <TouchableOpacity style={[styles.cardButton, { backgroundColor: Colors[colorScheme].secondary }]}>
-            <Text style={styles.cardButtonText}>+ Add Food</Text>
-          </TouchableOpacity>
-          */}
+            <Text style={[styles.cardTitle, { color: Colors[colorScheme].text }]}>
+                Meal Log
+            </Text>
         <ScrollView style={styles.mealScroll} nestedScrollEnabled={true} showsVerticalScrollIndicator={true}>
         {fakeMeals.map((meal) => (
             <View key={meal.id} style={styles.mealItem}>
@@ -86,8 +126,11 @@ export default function HomeScreen() {
         ))}
         </ScrollView>
 
-        <TouchableOpacity style={[styles.cardButton, { backgroundColor: Colors[colorScheme].secondary }]}>
-        <Text style={styles.cardButtonText}>+ Add Food</Text>
+        <TouchableOpacity 
+          style={[styles.cardButton, { backgroundColor: Colors[colorScheme].secondary }]}
+          onPress={() => router.push('/(modals)/add-meal')}
+        >
+        <Text style={styles.cardButtonText}>+ Add Meal</Text>
         </TouchableOpacity>
         </View>
 
@@ -284,6 +327,14 @@ const styles = StyleSheet.create({
     zIndex: 1,
     borderRadius: 30,
   },
+    calendar: {
+    height: 110,
+    paddingTop: 8,
+    paddingBottom: 8,
+    borderRadius: 16,
+    marginBottom: 20,
+  },
+  
   
 });
 

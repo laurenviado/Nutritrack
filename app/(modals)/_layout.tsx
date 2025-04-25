@@ -5,7 +5,10 @@ export default function ModalLayout() {
     <Stack
       screenOptions={{
         presentation: 'modal',
-        headerShown: false,         // show the back arrow
+        headerBackTitle: 'minimal',
+        headerShown: false,
+        headerBackButtonDisplayMode: 'minimal',
+        title: '',
       }}
     />
   );

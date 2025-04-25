@@ -39,15 +39,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
-      <Tabs.Screen
-        name="pantry"
-        options={{
-          title: 'Pantry',
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="basket-outline" size={28} color={color} />
-          ),
-        }}
-      />
+
       <Tabs.Screen
         name="recipes"
         options={{
