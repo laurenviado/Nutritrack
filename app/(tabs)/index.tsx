@@ -5,6 +5,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { Colors } from '@/constants/Colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ProgressCircle from '@/components/ProgressCircle';
+import { DataSection } from '@/components/DataSection'; //api data
 import CalendarStrip from 'react-native-calendar-strip';
 
 export default function HomeScreen() {
@@ -69,6 +70,7 @@ export default function HomeScreen() {
   
 
   return (
+
     <SafeAreaView style={[styles.container, { backgroundColor: Colors[colorScheme].background }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <Text style={[styles.title, { color: Colors[colorScheme].text }]}>{formattedDate}</Text>
@@ -209,6 +211,7 @@ export default function HomeScreen() {
 
       </ScrollView>
     </SafeAreaView>
+
   );
 }
 
