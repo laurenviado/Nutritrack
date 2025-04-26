@@ -1,98 +1,391 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { DataSection } from '@/components/DataSection';
+import React, { useState } from 'react';
+import { useRouter } from 'expo-router';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { Colors } from '@/constants/Colors';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import ProgressCircle from '@/components/ProgressCircle';
+import { DataSection } from '@/components/DataSection'; //api data
+import CalendarStrip from 'react-native-calendar-strip';
 
 export default function HomeScreen() {
+  const router = useRouter();
+  const colorScheme = useColorScheme() ?? 'light';
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const isToday = (date: Date) => {
+    const today = new Date();
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
+  };
+
+  const formattedDate = isToday(selectedDate)
+    ? 'Today'
+    : selectedDate.toLocaleDateString(undefined, {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+      });
+
+  const handleDateChange = (date: moment.Moment) => {
+    setSelectedDate(date.toDate());
+  };
+
+  // Calculate macro totals using fake data (at bottom of code)
+  const macroTotals = fakeMeals.reduce(
+    (totals, meal) => ({
+      calories: totals.calories + meal.calories,
+      protein: totals.protein + meal.protein,
+      carbs: totals.carbs + meal.carbs,
+      fat: totals.fat + meal.fat,
+    }),
+    { calories: 0, protein: 0, carbs: 0, fat: 0 }
+  );
+
+    // fake data for meal plan block
+  const currentMealPlan = {
+    title: 'Cutting Plan',
+    caloriesTarget: 1800,
+    proteinTarget: 150,
+    carbsTarget: 150,
+    fatTarget: 60,
+  };
+  
+  // fake data for meal plan block
+  const progressData: {
+    [key: string]: { value: number; goal: number };
+    calories: { value: number; goal: number };
+    protein: { value: number; goal: number };
+    carbs: { value: number; goal: number };
+    fat: { value: number; goal: number };
+  } = {
+    calories: { value: 1900, goal: 1800 },
+    protein: { value: 130, goal: 150 },
+    carbs: { value: 160, goal: 150 },
+    fat: { value: 70, goal: 60 },
+  };  
+  
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
 
-        {/* Add the DataSection component here */}
-        <ThemedView style={styles.stepContainer}>
-            <ThemedText type="subtitle">Your Data</ThemedText>
-            <DataSection />
-        </ThemedView>
+    <SafeAreaView style={[styles.container, { backgroundColor: Colors[colorScheme].background }]}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <Text style={[styles.title, { color: Colors[colorScheme].text }]}>{formattedDate}</Text>
 
-        <ThemedView style={styles.stepContainer}>
-            <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-            <ThemedText>
-                Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-                Press{' '}
-                <ThemedText type="defaultSemiBold">
-                    {Platform.select({
-                        ios: 'cmd + d',
-                        android: 'cmd + m',
-                        web: 'F12'
-                    })}
-                </ThemedText>{' '}
-                to open developer tools.
-            </ThemedText>
-        </ThemedView>
+        {/* Calendar Block */}
+        <CalendarStrip
+                selectedDate={new Date()}
+                scrollable={false}
+                numDaysInWeek={7} // 👈 forces exactly 7 days
+                style={[styles.calendar]}
+                calendarColor={Colors[colorScheme].primary}
+                dateNameStyle={{
+                    fontSize: 13, // Day label, e.g. "MON"
+                    color: Colors[colorScheme].text,
+                }}
+                dateNumberStyle={{
+                    fontSize: 20, // Date number, e.g. "21"
+                    color: Colors[colorScheme].text,
+                }}
+                highlightDateNameStyle={{
+                    fontSize: 13,
+                    color: Colors[colorScheme].background,
+                }}
+                highlightDateNumberStyle={{
+                    fontSize: 20,
+                    color: Colors[colorScheme].background,
+                }}
+                
+                highlightDateContainerStyle={{
+                    backgroundColor: Colors[colorScheme].secondary,
+                    borderRadius: 20,
+                    height: 50,
+                    width: 50,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+                    onDateSelected={handleDateChange}
+                />
 
-        <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        {/* Meals Logged Block */}
+        <View style={[styles.card, { backgroundColor: Colors[colorScheme].peach }]}>
+            <Text style={[styles.cardTitle, { color: Colors[colorScheme].text }]}>
+                Meal Log
+            </Text>
+        <ScrollView style={styles.mealScroll} nestedScrollEnabled={true} showsVerticalScrollIndicator={true}>
+        {fakeMeals.map((meal) => (
+            <View key={meal.id} style={styles.mealItem}>
+            <Text style={[styles.mealName, { color: Colors[colorScheme].text }]}>
+                🍽️ {meal.mealType}: {meal.name}
+            </Text>
+            <Text style={{ color: Colors[colorScheme].text, fontSize: 12 }}>
+                {meal.calories} kcal • {meal.protein}g P / {meal.carbs}g C / {meal.fat}g F
+            </Text>
+            </View>
+        ))}
+        </ScrollView>
+
+        <TouchableOpacity 
+          style={[styles.cardButton, { backgroundColor: Colors[colorScheme].secondary }]}
+          onPress={() => router.push('/(modals)/add-meal')}
+        >
+        <Text style={styles.cardButtonText}>+ Add Meal</Text>
+        </TouchableOpacity>
+        </View>
+
+        {/* Macros Block */}
+        <View style={[styles.macrosBlock, { backgroundColor: Colors[colorScheme].primary }]}>
+          <Text style={[styles.macrosTitle, { color: Colors[colorScheme].text }]}>Daily Macros</Text>
+          {/*   <--- empty placeholder --->
+          <View style={styles.chartsRow}>
+            {['Protein', 'Carbs', 'Fats'].map((macro) => (
+              <View style={styles.pieWrapper} key={macro}>
+                <View style={[styles.piePlaceholder, { backgroundColor: Colors[colorScheme].accent }]} />
+                <Text style={{ color: Colors[colorScheme].text, fontSize: 12 }}>{macro}</Text>
+              </View>
+            ))}
+          </View>
+          */}
+            <View style={styles.chartsRow}>
+            <View style={styles.macroItem}>
+            <View style={styles.circleOutline}>
+                <Text style={[styles.macroValue, { color: Colors[colorScheme].text }]}>
+                    {macroTotals.protein}g
+                </Text>
+            </View>
+                <Text style={[styles.macroLabel, { color: Colors[colorScheme].text }]}>
+                Protein
+                </Text>
+            </View>
+            <View style={styles.macroItem}>
+            <View style={styles.circleOutline}>
+                <Text style={[styles.macroValue, { color: Colors[colorScheme].text }]}>
+                    {macroTotals.carbs}g
+                </Text>
+            </View>
+                <Text style={[styles.macroLabel, { color: Colors[colorScheme].text }]}>
+                Carbs
+                </Text>
+            </View>
+            <View style={styles.macroItem}>
+            <View style={styles.circleOutline}>
+                <Text style={[styles.macroValue, { color: Colors[colorScheme].text }]}>
+                    {macroTotals.fat}g
+                </Text>
+            </View>
+                <Text style={[styles.macroLabel, { color: Colors[colorScheme].text }]}>
+                Fat
+                </Text>
+            </View>
+            </View>
+
+        </View>
+
+        {/* Meal Plan Block */}
+        <View style={[styles.card, { backgroundColor: Colors[colorScheme].rose }]}>
+            <TouchableOpacity onPress={() => router.push('/meal-plan')}>
+                <Text style={[styles.cardTitle, { color: Colors[colorScheme].text }]}>
+                    Current Meal Plan – {currentMealPlan.title}
+                </Text>
+            </TouchableOpacity>
+            <View style={styles.chartsRow}>
+                {(['calories', 'protein', 'carbs', 'fat'] as const).map((key) => {
+                    const item = progressData[key];
+                    const percent = item.value / item.goal;
+
+                    return (
+                    <ProgressCircle
+                        key={key}
+                        percentage={percent}
+                        value={item.value}
+                        goal={item.goal}
+                        label={key.charAt(0).toUpperCase() + key.slice(1)}
+                    />
+                    );
+                })}
+            </View>
+        </View>
+
+      </ScrollView>
+    </SafeAreaView>
+
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  macrosBlock: {
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+  },
+  macrosTitle: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  chartsRow: {
     flexDirection: 'row',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    gap: 8,
+    marginTop: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  pieWrapper: {
+    alignItems: 'center',
+    flex: 1,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
+  piePlaceholder: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginBottom: 4,
+  },
+  card: {
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+  },
+  cardTitle: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  emptyText: {
+    fontStyle: 'italic',
+    marginBottom: 10,
+  },
+  cardButton: {
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  cardButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  mealItem: {
+    marginBottom: 12,
+  },
+  mealName: {
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  mealScroll: {
+    maxHeight: 150, // adjust as needed for 3-ish meals
+    marginBottom: 12,
+  },  
+  macroItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  macroValue: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  macroLabel: {
+    fontSize: 12,
+  },  
+  circleOutline: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: '#ccc', // you can swap this with a theme color if you'd like
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 4,
+  },  
+  circleOutlineProgress: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: '#ccc',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 4,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  circleOverlay: {
+    position: 'absolute',
     bottom: 0,
     left: 0,
-    position: 'absolute',
+    right: 0,
+    backgroundColor: '#fff',
+    height: '100%',
+    zIndex: 1,
+    borderRadius: 30,
   },
+    calendar: {
+    height: 110,
+    paddingTop: 8,
+    paddingBottom: 8,
+    borderRadius: 16,
+    marginBottom: 20,
+  },
+  
+  
 });
+
+const fakeMeals = [
+    {
+      id: 1,
+      name: 'Greek Yogurt with Berries',
+      mealType: 'Breakfast',
+      calories: 250,
+      protein: 20,
+      carbs: 25,
+      fat: 8,
+    },
+    {
+      id: 2,
+      name: 'Grilled Chicken Salad',
+      mealType: 'Lunch',
+      calories: 400,
+      protein: 35,
+      carbs: 15,
+      fat: 18,
+    },
+    {
+      id: 3,
+      name: 'Salmon with Quinoa',
+      mealType: 'Dinner',
+      calories: 550,
+      protein: 45,
+      carbs: 30,
+      fat: 22,
+    },
+    {
+        id: 4,
+        name: 'Salmon with Quinoa',
+        mealType: 'Dinner',
+        calories: 550,
+        protein: 45,
+        carbs: 30,
+        fat: 22,
+      },
+      {
+        id: 5,
+        name: 'Salmon with Quinoa',
+        mealType: 'Dinner',
+        calories: 550,
+        protein: 45,
+        carbs: 30,
+        fat: 22,
+      },
+  ];
+  
