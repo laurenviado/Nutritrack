@@ -4,6 +4,7 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { DataSection } from '@/components/DataSection';
 
 export default function HomeScreen() {
   return (
@@ -19,7 +20,30 @@ export default function HomeScreen() {
         <ThemedText type="title">Welcome!</ThemedText>
         <HelloWave />
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
+
+        {/* Add the DataSection component here */}
+        <ThemedView style={styles.stepContainer}>
+            <ThemedText type="subtitle">Your Data</ThemedText>
+            <DataSection />
+        </ThemedView>
+
+        <ThemedView style={styles.stepContainer}>
+            <ThemedText type="subtitle">Step 1: Try it</ThemedText>
+            <ThemedText>
+                Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
+                Press{' '}
+                <ThemedText type="defaultSemiBold">
+                    {Platform.select({
+                        ios: 'cmd + d',
+                        android: 'cmd + m',
+                        web: 'F12'
+                    })}
+                </ThemedText>{' '}
+                to open developer tools.
+            </ThemedText>
+        </ThemedView>
+
+        <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step 1: Try it</ThemedText>
         <ThemedText>
           Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
