@@ -1,7 +1,7 @@
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
-require('dotenv').config();
+require('dotenv').config({ path: __dirname + '/.env' });
 
 const app = express();
 app.use(cors());
@@ -26,11 +26,13 @@ connection.connect(error => {
 });
 
 // Example API endpoint
-app.get('/api/data', (req, res) => {
+app.get('/tables', (req, res) => {
     connection.query('SHOW TABLES', (error, results) => {
         if (error) {
+            console.log(error);
             return res.status(500).json({ error });
         }
+        console.log(results);
         res.json(results);
     });
 });
