@@ -14,6 +14,7 @@ import { useRouter } from 'expo-router';
 import DateTimePicker, {
   DateTimePickerAndroid,
 } from '@react-native-community/datetimepicker';
+import { addMealPlan } from '@/services/api';
 
 export default function AddMealPlanScreen() {
   const colorScheme = useColorScheme() ?? 'light';
@@ -79,6 +80,25 @@ export default function AddMealPlanScreen() {
       })
       .catch((err) => console.error('Error saving meal plan:', err));
     */
+
+    const mealPlanData = {
+      UserID: 1, // Replace with actual user ID when auth is implemented
+      Title: title,
+      StartDate: start.toISOString().split('T')[0],
+      EndDate: end.toISOString().split('T')[0],
+      CaloriesTarget: parseFloat(caloriesTarget),
+      ProteinTarget: parseFloat(proteinTarget),
+      CarbsTarget: parseFloat(carbsTarget),
+      FatTarget: parseFloat(fatTarget),
+      Notes: notes,
+    };
+
+    addMealPlan(mealPlanData)
+        .then(data => {
+          console.log('Saved Meal Plan:', data);
+          router.back();
+        })
+        .catch(err => console.error('Error saving meal plan:', err));
   
     // ✅ TEMP fallback for now
     router.back();

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
-import { fetchData } from '@/services/api';
+import { fetchTables } from '@/services/api';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -21,7 +21,7 @@ export function DataSection() {
     useEffect(() => {
         const loadData = async () => {
             try {
-                const result = await fetchData();
+                const result = await fetchTables();
                 setData(result);
             } catch (err) {
                 setError('Failed to load data');

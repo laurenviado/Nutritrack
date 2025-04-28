@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { fetchRecipeById, deleteRecipe } from '@/services/api';
 
 type Recipe = {
   RecipeName: string;
@@ -34,6 +35,10 @@ export default function ViewRecipe() {
         console.error('Failed to fetch recipe:', err);
       });
     */
+
+    fetchRecipeById(id)
+        .then(data => setRecipe(data))
+        .catch(err => console.error('Failed to fetch recipe:', err));
 
     // ✅ TEMPORARY: Use fake data for layout testing only
     const fakeRecipes: { [key: string]: Recipe } = {
@@ -113,8 +118,12 @@ export default function ViewRecipe() {
             onPress={() => {
               // 🧠 TODO: Call DELETE endpoint here
               // fetch(`http://your-server.com/api/recipes/${id}`, { method: 'DELETE' })
-              alert('Recipe deleted!');
-              router.back();
+              deleteRecipe(id)
+                  .then(() => {
+                    alert('Recipe deleted!');
+                    router.back();
+                  })
+                  .catch(err => console.error('Failed to delete recipe:', err));
             }}
           >
             <Text style={styles.buttonText}>Delete</Text>

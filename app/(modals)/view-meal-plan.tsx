@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Colors } from '@/constants/Colors';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { fetchMealPlanById, deleteMealPlan } from '@/services/api';
 
 type MealPlan = {
   Title: string;
@@ -31,6 +32,10 @@ export default function ViewMealPlanScreen() {
       .then(data => setMealPlan(data))
       .catch(err => console.error('Failed to fetch meal plan:', err));
     */
+
+    fetchMealPlanById(id)
+        .then(data => setMealPlan(data))
+        .catch(err => console.error('Failed to fetch meal plan:', err));
 
     // ✅ TEMPORARY placeholder
     if (id === '1') {
@@ -102,11 +107,16 @@ export default function ViewMealPlanScreen() {
 
           <TouchableOpacity
             style={[styles.button, { backgroundColor: Colors[colorScheme].rose }]}
+              // In delete button:
             onPress={() => {
               // 🧠 TODO: Add DELETE endpoint call here
               // fetch(`http://your-server.com/api/meal-plans/${id}`, { method: 'DELETE' })
-              alert('Meal plan deleted!');
-              router.back();
+              deleteMealPlan(id)
+                  .then(() => {
+                    alert('Meal plan deleted!');
+                    router.back();
+                  })
+                  .catch(err => console.error('Failed to delete meal plan:', err));
             }}
           >
             <Text style={styles.buttonText}>Delete</Text>
