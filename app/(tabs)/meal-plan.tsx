@@ -14,17 +14,17 @@ type MealPlan = {
   protein: number;
   carbs: number;
   fat: number;
-  notes: string;
+  notes: string; 
 };
 
 export default function MealPlanScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const router = useRouter();
 
-  // ✅ This will be filled by database query later
+  // ✅ This will be filled by database query soon
   const [mealPlans, setMealPlans] = useState<MealPlan[]>([]);
 
-  // 🧠 TEMPORARY: Remove this after connecting DB
+  // 🧠 TEMPORARY: Remove this after connecting DB 
   // const fakeMealPlans: MealPlan[] = [
   //   {
   //     id: '1',
