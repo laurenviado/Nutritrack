@@ -6,6 +6,7 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Colors } from '@/constants/Colors';
+import { fetchRecipes } from '@/services/api';
 
 export default function RecipesScreen() {
   const router = useRouter();
@@ -35,7 +36,7 @@ export default function RecipesScreen() {
   //   },
   // ];
 
-  // 🧠 TODO: Fetch recipes from the database on mount
+  // 🧠 TODO: Fetch recipes from the database on mount //Done
   useEffect(() => {
     // Example pseudocode for fetch
     /*
@@ -44,6 +45,10 @@ export default function RecipesScreen() {
       .then(data => setRecipes(data))
       .catch(err => console.error(err));
     */
+
+    fetchRecipes()
+        .then(data => setRecipes(data))
+        .catch(err => console.error('Failed to fetch recipes:', err));
   }, []);
 
   return (

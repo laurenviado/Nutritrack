@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Colors } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
+import { fetchMealPlans } from '@/services/api';
 
 type MealPlan = {
   id: string; // corresponds to MealPlanID in DB
@@ -40,13 +41,16 @@ export default function MealPlanScreen() {
   // ];
 
   useEffect(() => {
-    // 🧠 TODO: Replace this with actual fetch from your backend
+    // 🧠 TODO: Replace this with actual fetch from your backend //Done
     /*
     fetch('http://your-server.com/api/meal-plans')
       .then(res => res.json())
       .then(data => setMealPlans(data))
       .catch(err => console.error('Failed to fetch meal plans:', err));
     */
+      fetchMealPlans()
+          .then(data => setMealPlans(data))
+          .catch(err => console.error('Failed to fetch meal plans:', err));
 
     // TEMP fallback (can be removed once DB is connected)
     setMealPlans([

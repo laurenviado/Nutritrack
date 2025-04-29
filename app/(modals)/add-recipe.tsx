@@ -4,6 +4,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { Colors } from '@/constants/Colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { addRecipe } from '@/services/api';
 
 export default function AddRecipeScreen() {
   const colorScheme = useColorScheme() ?? 'light';
@@ -74,6 +75,25 @@ export default function AddRecipeScreen() {
     })
     .catch(err => console.error('Error saving recipe:', err));
     */
+
+    const recipeData = {
+      name,
+      description,
+      totalTime,
+      servings: parseInt(servings),
+      calories: parseInt(calories),
+      protein: parseInt(protein),
+      carbs: parseInt(carbs),
+      fat: parseInt(fat),
+      instructions,
+    };
+
+    addRecipe(recipeData)
+        .then(data => {
+          console.log('Recipe saved:', data);
+          router.back();
+        })
+        .catch(err => console.error('Error saving recipe:', err));
 
     // ✅ Temporary fallback for now
     router.back();
